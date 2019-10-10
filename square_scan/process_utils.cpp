@@ -36,7 +36,6 @@ int findLargeSquare(const vector<vector<Point> > &squares,
     return max_square_idx;
 }
 
-
 double getSpacePointToPoint(Point p1, Point p2) {
     int a = p1.x - p2.x;
     int b = p1.y - p2.y;
@@ -90,7 +89,6 @@ vector<Point> findSquarePoints(vector<Point> &hull, vector<Point> &largest_squar
     return squarePoints;
 }
 
-
 vector<Point> doProcess(Mat &gray_img) {
     vector<vector<Point>> contours, squares, hulls;
     findContours(gray_img, contours, RETR_LIST, CHAIN_APPROX_SIMPLE);
@@ -120,4 +118,16 @@ vector<Point> doProcess(Mat &gray_img) {
         result = findSquarePoints(hull, large_square);
     }
     return result;
+}
+
+bool checkSquareArea(Mat &srcImg, vector<Point> points) {
+    if(!points.size()) {
+        return false;
+    }
+    
+    double squareArea = contourArea(points);
+    double imgArea = srcImg.cols*srcImg.rows;
+    double p = imgArea/squareArea;
+    cout << "p: " << p << endl;
+    return imgArea/squareArea < 8;
 }

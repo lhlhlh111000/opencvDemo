@@ -23,5 +23,6 @@ double getSpacePointToPoint(Point p1, Point p2);
 Point2f computeIntersect(Vec4i a, Vec4i b);
 vector<Point> findSquarePoints(vector<Point> &hull, vector<Point> &largest_square);
 vector<Point> doProcess(Mat &gray_img);
+bool checkSquareArea(Mat &srcImg, vector<Point> points);
 
 #endif /* process_utils_hpp */

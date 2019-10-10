@@ -18,5 +18,8 @@ vector<Point> doOldFind(Mat& srcImg) {
     dilate(img_to_process, img_to_process, Mat(), Point(-1, -1), 3, 1, 1);
     
     vector<Point> points = doProcess(img_to_process);
+    if(!checkSquareArea(srcImg, points)) {
+        points.clear();
+    }
     return points;
 }

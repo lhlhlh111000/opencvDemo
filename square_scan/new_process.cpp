@@ -37,5 +37,8 @@ vector<Point> doFind(Mat &srcImg) {
     imshow("gray", img_to_process);
     
     vector<Point> points = doProcess(img_to_process);
+    if(!checkSquareArea(srcImg, points)) {
+        points.clear();
+    }
     return points;
 }

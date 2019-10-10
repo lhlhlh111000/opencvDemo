@@ -36,9 +36,9 @@ void showFindResult(string path) {
     resize(img_rgb, img_rgb, Size(img_rgb.cols/2, img_rgb.rows/2));
     imshow("origin", img_rgb);
     vector<Point> points = doOldFind(img_rgb);
-//    if(!points.size()) {
+    if(!points.size()) {
         points = doFind(img_rgb);
-//    }
+    }
     
     if(points.size()) {
         for (int i = 0; i < points.size(); i++) {
