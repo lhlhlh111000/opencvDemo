@@ -21,5 +21,8 @@ vector<Point> doOldFind(Mat& srcImg) {
     if(!checkSquareArea(srcImg, points)) {
         points.clear();
     }
+    if(!checkSquareWH(points)) {
+        points.clear();
+    }
     return points;
 }

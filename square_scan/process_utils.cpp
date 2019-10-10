@@ -131,3 +131,89 @@ bool checkSquareArea(Mat &srcImg, vector<Point> points) {
     cout << "p: " << p << endl;
     return imgArea/squareArea < 8;
 }
+
+vector<Point> sortPointClockwise(vector<Point> points) {
+    if (points.size() != 4) {
+        return points;
+    }
+    
+    Point unFoundPoint;
+    vector<Point> result = {unFoundPoint, unFoundPoint, unFoundPoint, unFoundPoint};
+    
+    long minDistance = -1;
+    for(Point &point : points) {
+        long distance = point.x * point.x + point.y * point.y;
+        if(minDistance == -1 || distance < minDistance) {
+            result[0] = point;
+            minDistance = distance;
+        }
+    }
+    if (result[0] != unFoundPoint) {
+        Point &leftTop = result[0];
+        points.erase(remove(points.begin(), points.end(), leftTop));
+        if ((pointSideLine(leftTop, points[0], points[1]) * pointSideLine(leftTop, points[0], points[2])) < 0) {
+            result[2] = points[0];
+        } else if ((pointSideLine(leftTop, points[1], points[0]) * pointSideLine(leftTop, points[1], points[2])) < 0) {
+            result[2] = points[1];
+        } else if ((pointSideLine(leftTop, points[2], points[0]) * pointSideLine(leftTop, points[2], points[1])) < 0) {
+            result[2] = points[2];
+        }
+    }
+    if (result[0] != unFoundPoint && result[2] != unFoundPoint) {
+        Point &leftTop = result[0];
+        Point &rightBottom = result[2];
+        points.erase(remove(points.begin(), points.end(), rightBottom));
+        if (pointSideLine(leftTop, rightBottom, points[0]) > 0) {
+            result[1] = points[0];
+            result[3] = points[1];
+        } else {
+            result[1] = points[1];
+            result[3] = points[0];
+        }
+    }
+    
+    if (result[0] != unFoundPoint && result[1] != unFoundPoint && result[2] != unFoundPoint && result[3] != unFoundPoint) {
+        return result;
+    }
+    
+    return points;
+}
+
+long long pointSideLine(Point &lineP1, Point &lineP2, Point &point) {
+    long x1 = lineP1.x;
+    long y1 = lineP1.y;
+    long x2 = lineP2.x;
+    long y2 = lineP2.y;
+    long x = point.x;
+    long y = point.y;
+    return (x - x1)*(y2 - y1) - (y - y1)*(x2 - x1);
+}
+
+double getPointDistance(Point &p1, Point &p2) {
+    return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));
+}
+
+
+bool checkSquareWH(vector<Point> points) {
+    if(!points.size()) {
+        return false;
+    }
+    if(points.size() != 4) {
+        return false;
+    }
+    
+    points = sortPointClockwise(points);
+    Point leftTop = points[0];
+    Point rightTop = points[1];
+    Point rightBottom = points[2];
+    Point leftBottom = points[3];
+    
+    double width = (getPointDistance(leftTop, rightTop) + getPointDistance(leftBottom, rightBottom))/2;
+    double height = (getPointDistance(leftTop, leftBottom) + getPointDistance(rightTop, rightBottom))/2;
+    
+    // idcard： 85.6mm×54.0mm×1.0mm  ---- 1.58518
+    // driver card: 长88毫米 (过塑后是95毫米),宽60毫米(过塑后是65毫米) ----- 1.47 || 1.46
+    double p = width > height ? width/height : height/width;
+    cout << "WH: " << p << endl;
+    return p>1.2 && p<1.8;
+}

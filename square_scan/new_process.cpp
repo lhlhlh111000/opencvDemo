@@ -34,10 +34,12 @@ vector<Point> doFind(Mat &srcImg) {
     meanStdDev(filtered, mean, stdev);
     threshold(filtered, img_to_process, mean.val[0] + stdev.val[0], 1.0, THRESH_TOZERO);
     img_to_process.convertTo(img_to_process, CV_8UC1);
-    imshow("gray", img_to_process);
     
     vector<Point> points = doProcess(img_to_process);
     if(!checkSquareArea(srcImg, points)) {
+        points.clear();
+    }
+    if(!checkSquareWH(points)) {
         points.clear();
     }
     return points;
